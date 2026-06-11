@@ -1,0 +1,16 @@
+# Raw scraped HTML and data -- do NOT republish Clay's data
+data/raw/
+data/processed/*.csv
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# dbt
+dbt_clay/target/
+dbt_clay/dbt_packages/
+dbt_clay/logs/
+
+# keep the seed starter so the repo runs out-of-the-box
+!data/processed/.gitkeep
