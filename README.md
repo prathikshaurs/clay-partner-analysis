@@ -120,13 +120,13 @@ of high-performing partners in Clay's ecosystem.
 
 ## Architecture
 
-```
-scraper/          Polite cached scraper (Python + BeautifulSoup)
-data/processed/   Clean CSVs (not published — see .gitignore)
-dbt_clay/         dbt models: staging → intermediate → marts
-analysis/         DuckDB analysis + findings memo
-dashboard/        Charts (matplotlib, Clay brand colors)
-```
+| Folder | Contents |
+|---|---|
+| `scraper/` | Polite cached scraper (Python + BeautifulSoup) |
+| `data/processed/` | Clean CSVs (not published, see .gitignore) |
+| `dbt_clay/` | dbt models: staging, intermediate, marts |
+| `analysis/` | DuckDB analysis + findings memo |
+| `dashboard/` | Charts (matplotlib, Clay brand colors) |
 
 
 ## Stack
