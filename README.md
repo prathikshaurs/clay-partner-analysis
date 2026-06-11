@@ -1,81 +1,143 @@
 # Clay Partner Tier Progression Analysis
 
-A data analysis of Clay's public solutions-partner ecosystem, exploring **what
-distinguishes partners who climb tiers** (Artisan → Advanced Artisan → Studio →
-Elite Studio) and producing a recommendation the partnerships team could act on.
+An analysis of Clay's public solutions-partner ecosystem (170 partners, June 2026),
+exploring **what distinguishes partners who climb tiers** and producing a
+recommendation the partnerships team could act on.
 
-> Built as a portfolio project using **only publicly available data** from
-> [clay.com/experts](https://www.clay.com/experts). No private or proprietary
-> data was used. Raw scraped data is intentionally excluded from this repo;
-> the scraper is included for reproducibility.
+> Built using only publicly available data from [clay.com/experts](https://www.clay.com/experts).
+> No private or proprietary data was used. Raw scraped data is not included in this repo.
 
-## Why this project
+---
 
-Clay's Data Analyst role emphasizes going *beyond the "what" to understand the
-"why."* Clay tiers its 160+ partner agencies, so a natural analytical question
-is: **which characteristics predict a partner reaching the top (Elite) tier?**
-That's a question Clay's own partnerships and data teams would care about, and
-it mirrors the analytical motion described in the job.
+## The Question
+
+Clay tiers its 170+ partner agencies across four levels: Artisan, Advanced Artisan,
+Studio, and Elite Studio. The partnerships team decides who gets promoted.
+
+**What do promoted partners have in common that lower-tier partners don't?**
+
+If those signals are detectable from a partner's public profile, Clay's partnerships
+team could identify high-potential partners earlier and invest in accelerating their
+progression.
+
+---
+
+## Key Findings
+
+### 1. The tier pyramid is brutally steep
+
+78% of Clay's 170 partners sit at the lowest Artisan tier. Only 5 have reached Elite.
+That's a 26:1 ratio — Elite is a genuinely earned designation, not a participation badge.
+
+![Tier Pyramid](dashboard/chart1_tier_pyramid.png)
+
+---
+
+### 2. Elite partners chase bigger customers
+
+Every Elite partner targets "Growth stage startups (Series B-C)" and
+"Mid-Market / Enterprise" ICPs. Artisan partners are far more scattered,
+with many focused only on early-stage startups.
+
+This is the strongest differentiator in the dataset. Higher-tier partners
+serve more complex, higher-value customers — which drives more Clay usage
+volume and more visible outcomes.
+
+---
+
+### 3. Elite partners are broader specialists
+
+Elite partners list more expertise areas (6.0 vs 5.5 for Artisan) and write
+richer, longer profiles — signaling deeper product knowledge.
+
+![Expertise Breadth](dashboard/chart2_expertise_breadth.png)
+
+---
+
+### 4. Salesforce is universal at the top
+
+100% of Elite and Studio partners mention Salesforce. HubSpot penetration
+rises through mid-tiers but drops at Elite — suggesting Elite partners have
+moved beyond SMB customers (HubSpot) and serve enterprise accounts (Salesforce).
+
+![CRM Penetration](dashboard/chart3_crm_penetration.png)
+
+---
+
+### 5. Longer commitments signal confidence
+
+80% of Elite partners require a 3-month minimum engagement vs. 31% of
+Artisan partners offering 1-month engagements. Longer commitments reflect
+confidence and a focus on deeper client relationships.
+
+![Minimum Engagement](dashboard/chart4_min_engagement.png)
+
+---
+
+### 6. Language coverage does not predict tier
+
+Artisan partners speak slightly more languages on average (2.11) than Elite
+(2.00). Being multilingual is not a differentiator. Depth beats breadth.
+
+---
+
+## The Elite Partner Profile
+
+A partner likely to reach Elite tier looks like this:
+
+| Signal | Elite | Artisan |
+|---|---|---|
+| Targets Growth/Enterprise ICPs | 100% | ~40% |
+| Mentions Salesforce | 100% | ~70% |
+| Avg expertise tags | 6.0 | 5.5 |
+| Requires 3-month minimum | 80% | 51% |
+| Avg profile length | 14,615 chars | 13,579 chars |
+
+---
+
+## Recommendation
+
+Clay's partnerships team could build a simple scoring model for Advanced
+Artisan partners using these five signals, all detectable from a partner's
+public profile. Partners scoring 4 or 5 out of 5 are strong candidates for
+early investment: co-marketing support, case study features, or introductions
+to enterprise prospects.
+
+Surfacing these partners proactively, rather than waiting for organic
+progression, could compress the promotion timeline and increase the density
+of high-performing partners in Clay's ecosystem.
+
+---
+
+## What I'd Explore with Internal Data
+
+- Which partners are driving the most new customer revenue for Clay?
+- How long does it typically take to move from Artisan to Elite?
+- Do partners who receive co-marketing support progress faster?
+- Is there a credit consumption threshold that predicts tier promotion?
+
+---
 
 ## Architecture
+scraper/          Polite cached scraper (Python + BeautifulSoup)
+data/processed/   Clean CSVs (not published — see .gitignore)
+dbt_clay/         dbt models: staging → intermediate → marts
+analysis/         DuckDB analysis + findings memo
+dashboard/        Charts (matplotlib, Clay brand colors)
 
-```
-scraper/        Polite, cached scraper for the public directory (Python + bs4)
-data/raw/       Cached HTML (gitignored)
-data/processed/ Clean CSVs: partners_list.csv, partners_detail.csv
-dbt_clay/       dbt project: staging -> intermediate -> marts
-  models/staging/        stg_partners, stg_partner_detail   (clean + type)
-  models/intermediate/   int_partner_features               (derive features)
-  models/marts/          mart_partner_tier_analysis         (window functions)
-analysis/       Standalone DuckDB analysis (run without a warehouse)
-dashboard/      Charts + exports for the BI layer (Sigma / Hex / Tableau)
-```
 
-The dbt layer is written for **Snowflake** (Clay's warehouse) but the
-`analysis/tier_analysis.py` script reproduces the same logic locally in DuckDB
-so you can explore with zero setup.
+## Stack
+
+Python · SQL (CTEs, window functions) · dbt · DuckDB · matplotlib
 
 ## Setup
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install requests beautifulsoup4 pandas duckdb
-
-# 1. collect the data (polite: cached, 2.5s delay, honest user-agent)
+pip install requests beautifulsoup4 pandas duckdb matplotlib
 python scraper/scrape_partners.py --pages 6 --detail
-
-# 2. quick local analysis (no warehouse needed)
 python analysis/tier_analysis.py
+python dashboard/charts.py
 
-# 3. (optional) run the dbt models against Snowflake
-cd dbt_clay && dbt run
-```
-
-> Before running the scraper, review clay.com/terms-of-service. Set your real
-> contact email in `scraper/scrape_partners.py` (HEADERS).
-
-## Key questions explored
-
-1. What's the tier distribution, and how exclusive is each tier?
-2. Does an **ex-Clay founder** correlate with reaching a higher tier?
-3. Which **regions** are over- or under-served (expansion opportunity)?
-4. Do higher-tier partners list **broader expertise** or richer profiles?
-5. What **profile** best predicts Elite status — and how could the
-   partnerships team spot those partners earlier?
-
-## Findings
-
-See [`analysis/findings.md`](analysis/findings.md) for the 1-page memo. (Write
-this after you run the analysis — let the data tell you the story.)
-
-## Tech
-
-SQL (CTEs, window functions) · dbt · Snowflake · DuckDB · Python (pandas,
-BeautifulSoup) · BI dashboard (Sigma / Hex / Tableau Public)
-
-## Caveats
-
-This is an outside-in analysis built from a public directory snapshot. Some
-inferences (region from location strings, ex-Clay flags from page text) are
-heuristic and would be refined with internal data. The point is to demonstrate
-analytical approach and clear communication, not to claim definitive answers.
+Data source: clay.com/experts, fetched June 2026. All data publicly available.
+Built as a portfolio piece by Prathiksha Mohan Raje Urs.
