@@ -104,10 +104,10 @@ def chart_expertise_breadth(df):
                  f"{val:.1f}", ha="center", fontsize=11, fontweight="bold")
 
     ax2 = ax1.twinx()
-    ax2.plot(x, profile.values, color=ORANGE,
+    ax2.plot(x, profile.values, color="#be82fa",
              marker="o", linewidth=2, markersize=7, label="Avg profile length (k chars)")
-    ax2.set_ylabel("Avg Profile Length (k chars)", fontsize=10, color="#e94560")
-    ax2.tick_params(axis="y", labelcolor="#e94560")
+    ax2.set_ylabel("Avg Profile Length (k chars)", fontsize=10, color="#be82fa")
+    ax2.tick_params(axis="y", labelcolor="#be82fa")
 
     ax1.set_xticks(x)
     ax1.set_xticklabels(TIER_ORDER, fontsize=10)
@@ -117,7 +117,7 @@ def chart_expertise_breadth(df):
     ax1.set_ylim(0, avg.max() * 1.3)
     ax1.spines[["top", "right"]].set_visible(False)
     ax2.spines[["top", "left"]].set_visible(False)
-    line_patch = mpatches.Patch(color="#e94560", label="Avg profile length (k chars)")
+    line_patch = mpatches.Patch(color="#be82fa", label="Avg profile length (k chars)")
     ax1.legend(handles=[line_patch], loc="upper right", fontsize=9)
     plt.tight_layout()
     plt.savefig(OUT / "chart2_expertise_breadth.png", dpi=150, bbox_inches="tight")
