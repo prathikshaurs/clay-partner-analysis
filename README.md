@@ -141,6 +141,7 @@ pip install requests beautifulsoup4 pandas duckdb matplotlib
 python scraper/scrape_partners.py --pages 6 --detail
 python analysis/tier_analysis.py
 python dashboard/charts.py
+```
 
 Data source: clay.com/experts, fetched June 2026. All data publicly available.
 Built as a portfolio piece by Prathiksha Mohan Raje Urs.
