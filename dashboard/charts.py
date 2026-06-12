@@ -150,7 +150,7 @@ def chart_crm_penetration(df):
     ax.set_title("CRM Ecosystem by Tier\nSalesforce dominates at higher tiers",
                  fontsize=13, fontweight="bold", pad=15)
     ax.set_ylim(0, 120)
-    ax.legend(fontsize=10)
+    ax.legend(fontsize=10, loc="upper right", bbox_to_anchor=(1, 1.12))
     ax.spines[["top", "right"]].set_visible(False)
     plt.tight_layout()
     plt.savefig(OUT / "chart3_crm_penetration.png", dpi=150, bbox_inches="tight")
@@ -194,7 +194,7 @@ def chart_min_engagement(df):
     ax.set_title("Minimum Engagement Length by Tier\n3-month commitments dominate at Elite",
                  fontsize=13, fontweight="bold", pad=15)
     ax.set_ylim(0, 110)
-    ax.legend(fontsize=10, loc="upper right")
+    ax.legend(fontsize=10, loc="upper right", bbox_to_anchor=(1, 1.12))
     ax.spines[["top", "right"]].set_visible(False)
     plt.tight_layout()
     plt.savefig(OUT / "chart4_min_engagement.png", dpi=150, bbox_inches="tight")
